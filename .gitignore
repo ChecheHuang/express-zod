@@ -1,0 +1,7 @@
+node_modules
+dist
+
+src/swagger.yaml
+src/utils/serverLog.json
+public
+prisma/dev.db
