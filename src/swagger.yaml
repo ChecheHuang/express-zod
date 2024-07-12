@@ -1,0 +1,382 @@
+openapi: 3.1.0
+info:
+  title: Example API
+  version: 1.2.3
+paths:
+  /api/auth/login:
+    post:
+      operationId: PostApiAuthLogin
+      tags:
+        - 身分驗證
+      requestBody:
+        description: POST /api/auth/login Request body
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: POST /api/auth/login Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        examples:
+                          - "123"
+                    required:
+                      - name
+                required:
+                  - status
+                  - data
+        "400":
+          description: POST /api/auth/login Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+  /api/auth/refresh:
+    post:
+      operationId: PostApiAuthRefresh
+      tags:
+        - 身分驗證
+      requestBody:
+        description: POST /api/auth/refresh Request body
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: POST /api/auth/refresh Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                required:
+                  - status
+                  - data
+        "400":
+          description: POST /api/auth/refresh Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+  /api/todo:
+    get:
+      operationId: GetApiTodo
+      tags:
+        - Todo
+      responses:
+        "200":
+          description: GET /api/todo Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET /api/todo Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+    post:
+      operationId: PostApiTodo
+      tags:
+        - Todo
+      requestBody:
+        description: POST /api/todo Request body
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: POST /api/todo Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                required:
+                  - status
+                  - data
+        "400":
+          description: POST /api/todo Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+  /api/todo/{id}:
+    get:
+      operationId: GetApiTodoId
+      tags:
+        - Todo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: GET /api/todo/:id Parameter
+          schema:
+            type: string
+      responses:
+        "200":
+          description: GET /api/todo/:id Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET /api/todo/:id Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+    put:
+      operationId: PutApiTodoId
+      tags:
+        - Todo
+      requestBody:
+        description: PUT /api/todo/:id Request body
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: PUT /api/todo/:id Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                required:
+                  - status
+                  - data
+        "400":
+          description: PUT /api/todo/:id Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+    delete:
+      operationId: DeleteApiTodoId
+      tags:
+        - Todo
+      responses:
+        "200":
+          description: DELETE /api/todo/:id Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                required:
+                  - status
+                  - data
+        "400":
+          description: DELETE /api/todo/:id Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+components:
+  schemas: {}
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes: {}
+  links: {}
+  callbacks: {}
+tags: []
+servers:
+  - url: http://192.168.68.109:8081

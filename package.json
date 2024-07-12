@@ -12,7 +12,8 @@
 		"db:studio": "prisma studio",
 		"db:push": "prisma db push && prisma generate",
 		"postinstall": "prisma generate",
-		"db:reset": "npx prisma migrate reset && npm run db:push  && npm run db:seed"
+		"db:reset": "npx prisma migrate reset && npm run db:push  && npm run db:seed",
+		"create": "ts-node src/utils/create.ts"
 	},
 	"dependencies": {
 		"@prisma/client": "^5.16.1",

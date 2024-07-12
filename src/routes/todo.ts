@@ -1,3 +1,4 @@
+import { privateProcedure, procedure } from '@/utils/procedure'
 import { defaultEndpointsFactory, DependsOnMethod, Routing } from 'express-zod-api'
 import { z } from 'zod'
 
@@ -5,7 +6,7 @@ const tag = 'Todo'
 
 const todo: Routing = {
   '': new DependsOnMethod({
-    get: defaultEndpointsFactory.build({
+    get: procedure({
       tag,
       method: 'get',
       input: z.object({}),
@@ -28,9 +29,12 @@ const todo: Routing = {
     get: defaultEndpointsFactory.build({
       tag,
       method: 'get',
-      input: z.object({}),
+      input: z.object({
+        id: z.string().transform((id) => parseInt(id, 10)),
+      }),
       output: z.object({}),
       handler: async ({ input, options, logger }) => {
+        console.log(input.id)
         return {}
       },
     }),
@@ -43,7 +47,7 @@ const todo: Routing = {
         return {}
       },
     }),
-    delete: defaultEndpointsFactory.build({
+    delete: privateProcedure({
       tag,
       method: 'delete',
       input: z.object({}),
