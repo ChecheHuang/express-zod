@@ -1,5 +1,5 @@
 import { PORT, SERVER_ADDRESS } from '@/config'
-import { logMiddleware } from '@/middleware/logMiddleware'
+import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
 import chalk from 'chalk'
 import { createConfig, createServer, Documentation } from 'express-zod-api'
@@ -19,13 +19,13 @@ export const config = createConfig({
   },
   cors: false,
   logger: { level: 'debug', color: true },
-  tags: {
-    users: 'Everything about the users',
-    files: {
-      description: 'Everything about the files processing',
-      url: 'https://example.com',
-    },
-  },
+  // tags: {
+  //   users: 'Everything about the users',
+  //   files: {
+  //     description: 'Everything about the files processing',
+  //     url: 'https://example.com',
+  //   },
+  // },
 })
 
 async function createYaml(path: string) {
