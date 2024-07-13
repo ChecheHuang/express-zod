@@ -4,8 +4,8 @@ import { Documentation, Integration } from 'express-zod-api'
 import fs from 'fs'
 import { SERVER_ADDRESS } from '../config'
 
-export const swaggerDocumentPath = 'src/generated/swagger.yaml'
-export const clientDocumentPath = 'src/generated/swagger.yaml'
+export const swaggerDocumentPath = 'src/swagger.yaml'
+export const clientDocumentPath = 'src/generated/client.ts'
 export async function createYaml(path: string) {
   const yamlString = new Documentation({
     routing: routing, // the same routing and config that you use to start the server
@@ -16,7 +16,7 @@ export async function createYaml(path: string) {
     composition: 'inline', // optional, or "components" for keeping schemas in a separate dedicated section using refs
     // descriptions: { positiveResponse, negativeResponse, requestParameter, requestBody } // check out these features
   }).getSpecAsYaml()
-  fs.writeFile(path, yamlString, (err) => {})
+  fs.writeFileSync(path, yamlString)
 }
 
 export async function createClient(filePath = clientDocumentPath) {

@@ -2,5 +2,6 @@ node_modules
 dist
 
 src/utils/serverLog.json
+swagger.yaml
 public
 prisma/dev.db
