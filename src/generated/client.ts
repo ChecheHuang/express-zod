@@ -72,7 +72,9 @@ type GetApiTodoIdResponse =
       };
     };
 
-type PutApiTodoIdInput = {};
+type PutApiTodoIdInput = {
+  id: string;
+};
 
 type PutApiTodoIdResponse =
   | {

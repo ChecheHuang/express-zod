@@ -41,7 +41,9 @@ const todo: Routing = {
     put: defaultEndpointsFactory.build({
       tag,
       method: 'put',
-      input: z.object({}),
+      input: z.object({
+        id: z.string().transform((id) => parseInt(id, 10)),
+      }),
       output: z.object({}),
       handler: async ({ input, options, logger }) => {
         return {}

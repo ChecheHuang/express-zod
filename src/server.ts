@@ -1,7 +1,7 @@
 import { PORT, SERVER_ADDRESS } from '@/config'
 import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
-import { createClient, createYaml, swaggerDocumentPath } from '@/utils/create'
+import { createYaml, swaggerDocumentPath } from '@/utils/create'
 import chalk from 'chalk'
 import { createConfig, createServer } from 'express-zod-api'
 import swaggerUi from 'swagger-ui-express'
@@ -17,6 +17,7 @@ export const config = createConfig({
   },
   cors: false,
   logger: { level: 'debug', color: true },
+
   // tags: {
   //   users: 'Everything about the users',
   //   files: {
@@ -32,5 +33,5 @@ async function startServer() {
   console.log(chalk.blue(`😽[swagger]:${SERVER_ADDRESS}/api-docs`))
 }
 createYaml(swaggerDocumentPath)
-createClient()
+// createClient()
 startServer()
