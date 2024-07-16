@@ -13,14 +13,14 @@ export type TokenType = {
   account: string
 }
 export const createToken = ({ id, account }: TokenType) => {
-  const access_token = signToken(
+  const accessToken = signToken(
     {
       id,
       account,
     },
     TOKEN_EXPIRE_TIME
   )
-  const refresh_token = signToken(
+  const refreshToken = signToken(
     {
       id,
       account,
@@ -28,7 +28,7 @@ export const createToken = ({ id, account }: TokenType) => {
     REFRESH_TOKEN_EXPIRE_TIME
   )
   // console.log(access_token)
-  return { access_token, refresh_token }
+  return { accessToken, refreshToken }
 }
 
 export const signToken = (payload: JwtPayload, expiresIn?: string | number): string => {
