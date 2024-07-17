@@ -18,13 +18,10 @@ const aaa = defaultEndpointsFactory.build({
   },
 })
 
-
-
-// const aaa2 = fn
-// .method('get')
+// const aaa = fn
 // .tag('123')
 // .input(z.object({}))
 // .output(z.object({}))
-// .handler(async ({ input, options, logger }) => {
+// .get(async ({ input, options, logger }) => {
 //   return {}
 // }
