@@ -5,3 +5,4 @@ src/utils/serverLog.json
 src/swagger.yaml
 public
 prisma/dev.db
+prisma/zod
