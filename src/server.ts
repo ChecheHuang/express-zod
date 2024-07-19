@@ -1,12 +1,14 @@
 import { PORT, SERVER_ADDRESS } from '@/config'
 import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
-import { createYaml, swaggerDocumentPath } from '@/utils/create'
+import { actions } from '@/socket'
+import { createClient, createYaml, swaggerDocumentPath } from '@/utils/create'
 import chalk from 'chalk'
 import { createConfig, createServer } from 'express-zod-api'
+import { Server } from 'socket.io'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
-
+import { attachSockets, createSimpleConfig } from 'zod-sockets'
 export const config = createConfig({
   server: {
     listen: PORT,
@@ -26,12 +28,27 @@ export const config = createConfig({
   //   },
   // },
 })
+export const socketConfig = createSimpleConfig() // shorthand for root namespace only
 
 async function startServer() {
-  createServer(config, routing)
+  const { httpServer, httpsServer } = await createServer(config, routing)
+  await attachSockets({
+    io: new Server({
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+      },
+    }),
+    config: socketConfig,
+    actions,
+    target: httpsServer || httpServer,
+  })
   console.log(chalk.greenBright(`😼[server] :${SERVER_ADDRESS}`))
   console.log(chalk.blue(`😽[swagger]:${SERVER_ADDRESS}/api-docs`))
 }
-createYaml(swaggerDocumentPath)
-// createClient()
-startServer()
+
+;(async () => {
+  createClient()
+  createYaml(swaggerDocumentPath)
+  await startServer()
+})()

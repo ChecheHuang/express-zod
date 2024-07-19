@@ -1,6 +1,7 @@
 import { authMiddleware } from '@/middleware/authMiddleware'
+import { socketConfig } from '@/server'
 import { defaultEndpointsFactory } from 'express-zod-api'
-import { z } from 'zod'
+import { ActionsFactory } from 'zod-sockets'
 
 export const procedure = defaultEndpointsFactory.build.bind(defaultEndpointsFactory)
 
@@ -8,20 +9,6 @@ export const privateProcedure = defaultEndpointsFactory
   .addMiddleware(authMiddleware)
   .build.bind(defaultEndpointsFactory.addMiddleware(authMiddleware))
 
-const aaa = defaultEndpointsFactory.build({
-  tag: '123',
-  method: 'get',
-  input: z.object({name:z.string()}),
-  output: z.object({}),
-  handler: async ({ input, options, logger }) => {
-    return {}
-  },
-})
+export const actionsFactory = new ActionsFactory(socketConfig)
 
-// const aaa = fn
-// .tag('123')
-// .input(z.object({}))
-// .output(z.object({}))
-// .get(async ({ input, options, logger }) => {
-//   return {}
-// }
+export const socketProcedure = actionsFactory.build.bind(actionsFactory)

@@ -27,6 +27,8 @@
 		"http-errors": "^2.0.0",
 		"jsonwebtoken": "^9.0.2",
 		"module-alias": "^2.2.3",
+		"pino": "^9.3.1",
+		"pino-pretty": "^11.2.1",
 		"socket.io": "^4.7.5",
 		"swagger-ui-express": "^5.0.1",
 		"yamljs": "^0.3.0",

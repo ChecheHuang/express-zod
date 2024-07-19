@@ -1,10 +1,14 @@
-type PostApiAuthLoginInput = {};
+type PostApiAuthLoginInput = {
+  account: string;
+  password: string;
+};
 
 type PostApiAuthLoginResponse =
   | {
       status: "success";
       data: {
-        name: string;
+        accessToken: string;
+        refreshToken: string;
       };
     }
   | {
@@ -14,12 +18,17 @@ type PostApiAuthLoginResponse =
       };
     };
 
-type PostApiAuthRefreshInput = {};
+type PostApiAuthRefreshInput = {
+  refreshToken: string;
+};
 
 type PostApiAuthRefreshResponse =
   | {
       status: "success";
-      data: {};
+      data: {
+        accessToken: string;
+        refreshToken: string;
+      };
     }
   | {
       status: "error";
@@ -88,7 +97,7 @@ type PutApiTodoIdResponse =
       };
     };
 
-type DeleteApiTodoIdInput = {};
+type DeleteApiTodoIdInput = {} & {};
 
 type DeleteApiTodoIdResponse =
   | {
