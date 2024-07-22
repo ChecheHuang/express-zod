@@ -6,7 +6,6 @@
 	"scripts": {
 		"start": "npm run build &&  cross-env NODE_ENV=production node -r tsconfig-paths/register ./dist/server.js",
 		"dev": "cross-env NODE_ENV=development ts-node-dev -r ./tsconfig-paths-bootstrap.js src/server.ts",
-		"socket": "cross-env NODE_ENV=development ts-node-dev -r ./tsconfig-paths-bootstrap.js src/socket.ts",
 		"build": "esbuild src/**/*.ts  --bundle --packages=external --platform=node --format=cjs --outdir=dist ",
 		"lint": "eslint src --ext ts,tsx --fix --report-unused-disable-directives --max-warnings 0",
 		"db:seed": "ts-node scripts/seed.ts",

@@ -13,11 +13,14 @@ const onChat = socketProcedure({
   event: 'chat',
   input: z.tuple([z.string()]),
   handler: async ({ input: [message], client, all, withRooms, logger }) => {
-    console.log(client)
-
-    /* your implementation here */
-    // typeof message === "string"
+    await client.broadcast('onChat', message)
+    await client.emit('onChat', message)
   },
 })
 
 export const actions = [onPing, onChat]
+export const emission = {
+  onChat: {
+    schema: z.tuple([z.string()]),
+  },
+}

@@ -1,7 +1,7 @@
 import { PORT, SERVER_ADDRESS } from '@/config'
 import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
-import { actions } from '@/socket'
+import { actions, emission } from '@/socket'
 import { createClient, createYaml, swaggerDocumentPath } from '@/utils/create'
 import chalk from 'chalk'
 import { createConfig, createServer } from 'express-zod-api'
@@ -28,7 +28,9 @@ export const config = createConfig({
   //   },
   // },
 })
-export const socketConfig = createSimpleConfig() // shorthand for root namespace only
+export const socketConfig = createSimpleConfig({
+  emission,
+}) // shorthand for root namespace only
 
 async function startServer() {
   const { httpServer, httpsServer } = await createServer(config, routing)
