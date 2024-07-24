@@ -10,9 +10,11 @@ const todo: Routing = {
       tag,
       method: 'get',
       input: z.object({}),
-      output: z.object({}),
+      output: z.object({ name: z.string() }),
       handler: async ({ input, options, logger }) => {
-        return {}
+        return {
+          name: 'test',
+        }
       },
     }),
     post: defaultEndpointsFactory.build({

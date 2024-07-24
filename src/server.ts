@@ -1,7 +1,7 @@
 import { PORT, SERVER_ADDRESS } from '@/config'
 import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
-import { actions, emission } from '@/socket'
+import { actions, emission } from '@/routes/socket'
 import { createClient, createYaml, swaggerDocumentPath } from '@/utils/create'
 import chalk from 'chalk'
 import { createConfig, createServer } from 'express-zod-api'
@@ -17,7 +17,7 @@ export const config = createConfig({
       app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load(swaggerDocumentPath)))
     },
   },
-  cors: false,
+  cors: true,
   logger: { level: 'debug', color: true },
 
   // tags: {
@@ -30,17 +30,23 @@ export const config = createConfig({
 })
 export const socketConfig = createSimpleConfig({
   emission,
+  hooks: {
+    onConnection: async ({ client, withRooms, all }) => {
+      // console.log(client)
+      // console.log('onConnection')
+    },
+  },
 }) // shorthand for root namespace only
-
+export const io = new Server({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+})
 async function startServer() {
   const { httpServer, httpsServer } = await createServer(config, routing)
   await attachSockets({
-    io: new Server({
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-      },
-    }),
+    io,
     config: socketConfig,
     actions,
     target: httpsServer || httpServer,

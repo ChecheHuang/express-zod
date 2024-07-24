@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
+
 type PostApiAuthLoginInput = {
   account: string;
   password: string;
@@ -42,7 +45,9 @@ type GetApiTodoInput = {};
 type GetApiTodoResponse =
   | {
       status: "success";
-      data: {};
+      data: {
+        name: string;
+      };
     }
   | {
       status: "error";
@@ -194,15 +199,15 @@ export class ExpressZodAPIClient {
 }
 
 // Usage example:
-/*
-export const exampleImplementation: Implementation = async (
+
+export const implementation: Implementation = async (
   method,
   path,
   params,
 ) => {
   const hasBody = !["get", "delete"].includes(method);
   const searchParams = hasBody ? "" : `?${new URLSearchParams(params)}`;
-  const response = await fetch(`https://example.com${path}${searchParams}`, {
+  const response = await fetch(`http://192.168.68.109:8080${path}${searchParams}`, {
     method: method.toUpperCase(),
     headers: hasBody ? { "Content-Type": "application/json" } : undefined,
     body: hasBody ? JSON.stringify(params) : undefined,
@@ -212,6 +217,7 @@ export const exampleImplementation: Implementation = async (
   }
   return response.text();
 };
-const client = new ExpressZodAPIClient(exampleImplementation);
-client.provide("get", "/v1/user/retrieve", { id: "10" });
-*/
+
+
+
+export const provide = new ExpressZodAPIClient(implementation).provide
