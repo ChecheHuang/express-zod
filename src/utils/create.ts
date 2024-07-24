@@ -1,14 +1,19 @@
+import { SERVER_ADDRESS } from '@/config'
 import { routing } from '@/routes'
+import { actions, socketConfig } from '@/routes/socket'
 import { config } from '@/server'
-import { Documentation, Integration } from 'express-zod-api'
+import { Documentation as ApiDocumentation, Integration as ApiIntegration } from 'express-zod-api'
 import fs from 'fs'
-import { SERVER_ADDRESS } from '../config'
+import { Documentation, Integration as SocketIntegration } from 'zod-sockets'
+import manifest from '../../package.json'
 
-export const swaggerDocumentPath = 'src/swagger.yaml'
-export const clientDocumentPath = 'client/src/lib/implementation.ts'
-// export const clientDocumentPath = 'src/generated/implementation.ts'
-export async function createYaml(path: string) {
-  const yamlString = new Documentation({
+export const swaggerYamlPath = 'src/generated/swagger.yaml'
+export const socketYamlPath = 'src/generated/socket.yaml'
+export const apiProvidePath = 'src/generated/implementation.ts'
+export const socketProvidePath = 'src/generated/socket-implementation.ts'
+
+export async function createSwaggerYaml(filePath = swaggerYamlPath) {
+  const yamlString = new ApiDocumentation({
     routing: routing, // the same routing and config that you use to start the server
     config: config,
     version: '1.2.3',
@@ -17,18 +22,22 @@ export async function createYaml(path: string) {
     composition: 'inline', // optional, or "components" for keeping schemas in a separate dedicated section using refs
     // descriptions: { positiveResponse, negativeResponse, requestParameter, requestBody } // check out these features
   }).getSpecAsYaml()
-  fs.writeFileSync(path, yamlString)
+  const fold = filePath.split('/').slice(0, -1).join('/')
+  if (!fs.existsSync(fold)) {
+    await fs.mkdirSync(fold, { recursive: true })
+  }
+  fs.writeFileSync(filePath, yamlString)
 }
 
-export async function createClient(filePath = clientDocumentPath) {
-  const client = new Integration({
+export async function createApiProvide(filePath = apiProvidePath) {
+  const client = new ApiIntegration({
     routing: routing,
     variant: 'client', // <— optional, see also "types" for a DIY solution
     optionalPropStyle: { withQuestionMark: true, withUndefined: true }, // optional
     splitResponse: false, // optional, prints the positive and negative response types separately
   })
   const prettierFormattedTypescriptCode = await client.printFormatted() // or just .print() for unformatted
-  const file =
+  const provideString =
     `/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
@@ -43,9 +52,42 @@ export async function createClient(filePath = clientDocumentPath) {
     `export const provide = new ExpressZodAPIClient(implementation).provide`
 
   const fold = filePath.split('/').slice(0, -1).join('/')
-  console.log(fold)
   if (!fs.existsSync(fold)) {
     await fs.mkdirSync(fold, { recursive: true })
   }
-  fs.writeFileSync(filePath, file)
+  fs.writeFileSync(filePath, provideString)
+}
+
+export async function createSocketYaml(filePath = socketYamlPath) {
+  const yamlString = new Documentation({
+    version: manifest.version,
+    title: 'Example APP',
+    description: 'AsyncAPI documentation example',
+    contact: {
+      name: 'Anna Bocharova',
+      url: 'https://robintail.cz',
+      email: 'me@robintail.cz',
+    },
+    license: { name: 'license' },
+    servers: { example: { url: `${SERVER_ADDRESS}/socket.io` } },
+    config: socketConfig,
+    actions: actions,
+  }).getSpecAsYaml()
+  const fold = filePath.split('/').slice(0, -1).join('/')
+  if (!fs.existsSync(fold)) {
+    await fs.mkdirSync(fold, { recursive: true })
+  }
+  fs.writeFileSync(filePath, yamlString)
+}
+
+export async function createSocketProvide(filePath = socketProvidePath) {
+  const provideString =
+    `/* eslint-disable @typescript-eslint/no-namespace */
+  ` + new SocketIntegration({ config: socketConfig, actions }).print()
+
+  const fold = filePath.split('/').slice(0, -1).join('/')
+  if (!fs.existsSync(fold)) {
+    await fs.mkdirSync(fold, { recursive: true })
+  }
+  fs.writeFileSync(filePath, provideString)
 }

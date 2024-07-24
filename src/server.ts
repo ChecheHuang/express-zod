@@ -1,20 +1,20 @@
 import { PORT, SERVER_ADDRESS } from '@/config'
 import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
-import { actions, emission } from '@/routes/socket'
-import { createClient, createYaml, swaggerDocumentPath } from '@/utils/create'
+import { actions, socketConfig } from '@/routes/socket'
+import { createApiProvide, createSocketProvide, createSocketYaml, createSwaggerYaml, swaggerYamlPath } from '@/utils/create'
 import chalk from 'chalk'
 import { createConfig, createServer } from 'express-zod-api'
 import { Server } from 'socket.io'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
-import { attachSockets, createSimpleConfig } from 'zod-sockets'
+import { attachSockets } from 'zod-sockets'
 export const config = createConfig({
   server: {
     listen: PORT,
     beforeRouting: ({ app, logger }) => {
       app.use(logMiddleware)
-      app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load(swaggerDocumentPath)))
+      app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load(swaggerYamlPath)))
     },
   },
   cors: true,
@@ -28,15 +28,7 @@ export const config = createConfig({
   //   },
   // },
 })
-export const socketConfig = createSimpleConfig({
-  emission,
-  hooks: {
-    onConnection: async ({ client, withRooms, all }) => {
-      // console.log(client)
-      // console.log('onConnection')
-    },
-  },
-}) // shorthand for root namespace only
+// shorthand for root namespace only
 export const io = new Server({
   cors: {
     origin: '*',
@@ -56,7 +48,9 @@ async function startServer() {
 }
 
 ;(async () => {
-  createClient()
-  createYaml(swaggerDocumentPath)
+  await createSwaggerYaml()
+  await createApiProvide('client/src/lib/implementation.ts')
+  await createSocketYaml()
+  await createSocketProvide('client/src/lib/socket-implementation.ts')
   await startServer()
 })()
