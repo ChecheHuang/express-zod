@@ -12,6 +12,12 @@ export const socketYamlPath = 'src/generated/socket.yaml'
 export const apiProvidePath = 'src/generated/implementation.ts'
 export const socketProvidePath = 'src/generated/socket-implementation.ts'
 
+const createFile = (filePath: string, content: string) => {
+  const fold = filePath.split('/').slice(0, -1).join('/')
+  if (!fs.existsSync(fold)) fs.mkdirSync(fold, { recursive: true })
+  fs.writeFileSync(filePath, content)
+}
+
 export async function createSwaggerYaml(filePath = swaggerYamlPath) {
   const yamlString = new ApiDocumentation({
     routing: routing, // the same routing and config that you use to start the server
@@ -22,11 +28,7 @@ export async function createSwaggerYaml(filePath = swaggerYamlPath) {
     composition: 'inline', // optional, or "components" for keeping schemas in a separate dedicated section using refs
     // descriptions: { positiveResponse, negativeResponse, requestParameter, requestBody } // check out these features
   }).getSpecAsYaml()
-  const fold = filePath.split('/').slice(0, -1).join('/')
-  if (!fs.existsSync(fold)) {
-    await fs.mkdirSync(fold, { recursive: true })
-  }
-  fs.writeFileSync(filePath, yamlString)
+  createFile(filePath, yamlString)
 }
 
 export async function createApiProvide(filePath = apiProvidePath) {
@@ -50,12 +52,7 @@ export async function createApiProvide(filePath = apiProvidePath) {
       .replace('https://example.com', `${SERVER_ADDRESS}`)
       .replace('exampleImplementation', 'implementation') +
     `export const provide = new ExpressZodAPIClient(implementation).provide`
-
-  const fold = filePath.split('/').slice(0, -1).join('/')
-  if (!fs.existsSync(fold)) {
-    await fs.mkdirSync(fold, { recursive: true })
-  }
-  fs.writeFileSync(filePath, provideString)
+  createFile(filePath, provideString)
 }
 
 export async function createSocketYaml(filePath = socketYamlPath) {
@@ -63,31 +60,19 @@ export async function createSocketYaml(filePath = socketYamlPath) {
     version: manifest.version,
     title: 'Example APP',
     description: 'AsyncAPI documentation example',
-    contact: {
-      name: 'Anna Bocharova',
-      url: 'https://robintail.cz',
-      email: 'me@robintail.cz',
-    },
+    contact: manifest.author,
     license: { name: 'license' },
     servers: { example: { url: `${SERVER_ADDRESS}/socket.io` } },
     config: socketConfig,
     actions: actions,
   }).getSpecAsYaml()
   const fold = filePath.split('/').slice(0, -1).join('/')
-  if (!fs.existsSync(fold)) {
-    await fs.mkdirSync(fold, { recursive: true })
-  }
-  fs.writeFileSync(filePath, yamlString)
+  createFile(filePath, yamlString)
 }
 
 export async function createSocketProvide(filePath = socketProvidePath) {
   const provideString =
     `/* eslint-disable @typescript-eslint/no-namespace */
   ` + new SocketIntegration({ config: socketConfig, actions }).print()
-
-  const fold = filePath.split('/').slice(0, -1).join('/')
-  if (!fs.existsSync(fold)) {
-    await fs.mkdirSync(fold, { recursive: true })
-  }
-  fs.writeFileSync(filePath, provideString)
+  createFile(filePath, provideString)
 }
