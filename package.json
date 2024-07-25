@@ -13,6 +13,7 @@
     "dev": "cross-env NODE_ENV=development ts-node-dev -r ./tsconfig-paths-bootstrap.js src/server.ts ",
     "client": "cd client && npm run dev",
     "build": "esbuild src/**/*.ts  --bundle --packages=external --platform=node --format=cjs --outdir=dist ",
+    "prepare": "husky install",
     "lint": "eslint src --ext ts,tsx --fix --report-unused-disable-directives --max-warnings 0",
     "db:seed": "ts-node scripts/seed.ts",
     "db:studio": "prisma studio",
@@ -59,6 +60,7 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.3",
-    "zod-prisma": "^0.5.4"
+    "zod-prisma": "^0.5.4",
+    "husky": "^8.0.3"
   }
 }
