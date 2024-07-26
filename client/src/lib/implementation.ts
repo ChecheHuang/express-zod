@@ -46,7 +46,12 @@ type GetApiTodoResponse =
   | {
       status: "success";
       data: {
-        name: string;
+        todos: {
+          id: number;
+          title: string;
+          content: string;
+          status: boolean;
+        }[];
       };
     }
   | {
@@ -56,12 +61,21 @@ type GetApiTodoResponse =
       };
     };
 
-type PostApiTodoInput = {};
+type PostApiTodoInput = {
+  title: string;
+  content: string;
+  status: boolean;
+};
 
 type PostApiTodoResponse =
   | {
       status: "success";
-      data: {};
+      data: {
+        id: number;
+        title: string;
+        content: string;
+        status: boolean;
+      };
     }
   | {
       status: "error";
@@ -77,7 +91,12 @@ type GetApiTodoIdInput = {
 type GetApiTodoIdResponse =
   | {
       status: "success";
-      data: {};
+      data: {
+        id: number;
+        title: string;
+        content: string;
+        status: boolean;
+      };
     }
   | {
       status: "error";
@@ -87,13 +106,21 @@ type GetApiTodoIdResponse =
     };
 
 type PutApiTodoIdInput = {
+  title: string;
+  content: string;
+  status: boolean;
   id: string;
 };
 
 type PutApiTodoIdResponse =
   | {
       status: "success";
-      data: {};
+      data: {
+        id: number;
+        title: string;
+        content: string;
+        status: boolean;
+      };
     }
   | {
       status: "error";
@@ -102,12 +129,19 @@ type PutApiTodoIdResponse =
       };
     };
 
-type DeleteApiTodoIdInput = {} & {};
+type DeleteApiTodoIdInput = {} & {
+  id: string;
+};
 
 type DeleteApiTodoIdResponse =
   | {
       status: "success";
-      data: {};
+      data: {
+        id: number;
+        title: string;
+        content: string;
+        status: boolean;
+      };
     }
   | {
       status: "error";
@@ -207,7 +241,7 @@ export const implementation: Implementation = async (
 ) => {
   const hasBody = !["get", "delete"].includes(method);
   const searchParams = hasBody ? "" : `?${new URLSearchParams(params)}`;
-  const response = await fetch(`http://192.168.68.109:8080${path}${searchParams}`, {
+  const response = await fetch(`http://192.168.1.35:8080${path}${searchParams}`, {
     method: method.toUpperCase(),
     headers: hasBody ? { "Content-Type": "application/json" } : undefined,
     body: hasBody ? JSON.stringify(params) : undefined,

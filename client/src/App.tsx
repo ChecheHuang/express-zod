@@ -19,7 +19,7 @@ export default function App() {
   }
 
   const getTodo = async () => {
-    const res = await provide('get', '/api/todo/:id', { id: '3' })
+    const res = await provide('get','/api/todo',{})
     if (res.status === 'error') return
     console.log(res.data)
   }
