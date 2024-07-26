@@ -2,7 +2,7 @@ node_modules
 dist
 
 src/utils/serverLog.json
-src/swagger.yaml
+src/generated
 public
 prisma/dev.db
 prisma/zod
