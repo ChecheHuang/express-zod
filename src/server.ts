@@ -3,23 +3,27 @@ import { logMiddleware } from '@/middleware/express/logMiddleware'
 import { routing } from '@/routes'
 import { actions, socketConfig } from '@/routes/socket'
 import { createApiProvide, createSocketProvide, createSocketYaml, createSwaggerYaml, swaggerYamlPath } from '@/utils/create'
+import bodyParser from 'body-parser'
 import chalk from 'chalk'
-import { createConfig, createServer } from 'express-zod-api'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import express from 'express'
+import { attachRouting, createConfig } from 'express-zod-api'
+import http from 'http'
+import path from 'path'
 import { Server } from 'socket.io'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import { attachSockets } from 'zod-sockets'
+
+export const publicPath = path.join(path.resolve(__dirname, '..'), '/public')
+const app = express()
+const server = http.createServer(app)
+
 export const config = createConfig({
-  server: {
-    listen: PORT,
-    beforeRouting: ({ app, logger }) => {
-      app.use(logMiddleware)
-      app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load(swaggerYamlPath)))
-    },
-  },
+  app,
   cors: true,
   logger: { level: 'debug', color: true },
-
   // tags: {
   //   users: 'Everything about the users',
   //   files: {
@@ -36,15 +40,31 @@ export const io = new Server({
   },
 })
 async function startServer() {
-  const { httpServer, httpsServer } = await createServer(config, routing)
+  app.use(cors())
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(cookieParser())
+
+  app.use(logMiddleware)
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load(swaggerYamlPath)))
+  const { notFoundHandler, logger } = attachRouting(config, routing)
   await attachSockets({
     io,
     config: socketConfig,
     actions,
-    target: httpsServer || httpServer,
+    target: server,
   })
-  console.log(chalk.greenBright(`😼[server] :${SERVER_ADDRESS}`))
-  console.log(chalk.blue(`😽[swagger]:${SERVER_ADDRESS}/api-docs`))
+
+  app.use(express.static(publicPath))
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(publicPath, 'index.html'))
+  })
+  app.use(notFoundHandler)
+
+  server.listen(PORT, () => {
+    console.log(chalk.greenBright(`😼[server] :${SERVER_ADDRESS}`))
+    console.log(chalk.blue(`😽[swagger]:${SERVER_ADDRESS}/api-docs`))
+  })
 }
 
 ;(async () => {
