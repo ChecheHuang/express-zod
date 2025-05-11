@@ -6,3 +6,4 @@ src/generated
 public
 prisma/dev.db
 prisma/zod
+**/*implementation.ts

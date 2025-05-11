@@ -129,7 +129,7 @@ type PutApiTodoIdResponse =
       };
     };
 
-type DeleteApiTodoIdInput = {} & {
+type DeleteApiTodoIdInput = {
   id: string;
 };
 
@@ -241,15 +241,15 @@ export const implementation: Implementation = async (
 ) => {
   const hasBody = !["get", "delete"].includes(method);
   const searchParams = hasBody ? "" : `?${new URLSearchParams(params)}`;
-  const response = await fetch(`http://192.168.1.35:8080${path}${searchParams}`, {
+  const response = await fetch(`http://192.168.68.110:8080${path}${searchParams}`, {
     method: method.toUpperCase(),
     headers: hasBody ? { "Content-Type": "application/json" } : undefined,
     body: hasBody ? JSON.stringify(params) : undefined,
   });
-  if (`${method} ${path}` in jsonEndpoints) {
-    return response.json();
-  }
-  return response.text();
+  const isJSON = response.headers
+    .get("content-type")
+    ?.startsWith("application/json");
+  return response[isJSON ? "json" : "text"]();
 };
 
 
